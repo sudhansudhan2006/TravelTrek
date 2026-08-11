@@ -1,0 +1,22 @@
+# Maven
+backend/target/
+
+# Java compiled files
+*.class
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# macOS
+.DS_Store
+
+# Environment / secrets
+.env
+
+# Logs
+*.logbackend/src/main/resources/application.properties

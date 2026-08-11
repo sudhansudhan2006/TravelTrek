@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - TravelTrek</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="text-center mb-3">
+        <img src="assets/logo.png" alt="TravelTrek logo" class="auth-logo">
+        <h3 class="mb-0">Create your account</h3>
+        <p class="auth-subtitle">Join TravelTrek to start planning</p>
+      </div>
+
+      <form id="register-form" novalidate>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="email" required placeholder="you@example.com">
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" required minlength="6"
+                 placeholder="At least 6 characters">
+        </div>
+        <div class="mb-3">
+          <label for="role" class="form-label">Account type</label>
+          <select class="form-select" id="role" required>
+            <option value="" selected disabled>Choose a role...</option>
+            <option value="TRAVELER">Traveler - browse, plan trips &amp; book packages</option>
+            <option value="TRAVEL_AGENT">Travel Agent - add activities to itineraries</option>
+            <option value="AGENCY_MANAGER">Agency Manager - manage travel packages</option>
+          </select>
+        </div>
+        <div id="register-error" class="alert alert-danger d-none" role="alert"></div>
+        <button type="submit" class="btn btn-tt-primary w-100" id="register-submit-btn">Register</button>
+      </form>
+
+      <p class="text-center mt-3 mb-0 auth-subtitle">
+        Already have an account? <a href="login.html">Login here</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+
+  <script>
+    if (isAuthenticated()) {
+      window.location.href = "dashboard.html";
+    }
+
+    const form = document.getElementById("register-form");
+    const errorBox = document.getElementById("register-error");
+    const submitBtn = document.getElementById("register-submit-btn");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorBox.classList.add("d-none");
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
+
+      submitBtn.disabled = true;
+      showSpinner();
+      try {
+        await registerUser(email, password, role);
+        showAlert("Account created successfully!", "success");
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        errorBox.textContent = getErrorMessage(error);
+        errorBox.classList.remove("d-none");
+      } finally {
+        hideSpinner();
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
