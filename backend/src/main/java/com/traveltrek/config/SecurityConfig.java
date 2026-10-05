@@ -52,6 +52,31 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // Frontend static resources and pages
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/login.html",
+                                "/register.html",
+                                "/dashboard.html",
+                                "/bookings.html",
+                                "/activities.html",
+                                "/destinations.html",
+                                "/itinerary.html",
+                                "/packages.html",
+                                "/profile.html",
+                                "/reports.html",
+                                "/users.html",
+                                "/unauthorized.html",
+                                "/*.html",
+                                "/css/**",
+                                "/js/**",
+                                "/assets/**",
+                                "/favicon.ico",
+                                "/error"
+                        ).permitAll()
+
                         .requestMatchers("/api/v1/auth/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/v1/packages/**").authenticated()
@@ -107,6 +132,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
                 "http://127.0.0.1",
                 "http://localhost",
+                "http://127.0.0.1:8080",
+                "http://localhost:8080",
                 "http://127.0.0.1:5500",
                 "http://localhost:5500",
                 "http://localhost:63342"

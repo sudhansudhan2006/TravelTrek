@@ -22,10 +22,10 @@ public class AuthController {
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
-    // POST /api/v1/auth/register - Creates a new account
+    // POST /api/v1/auth/register - Creates a new account without generating a JWT
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        AuthResponse response = authService.register(request);
+    public ResponseEntity<java.util.Map<String, Object>> register(@Valid @RequestBody RegisterRequest request) {
+        java.util.Map<String, Object> response = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     // POST /api/v1/auth/login - Authenticates an existing user

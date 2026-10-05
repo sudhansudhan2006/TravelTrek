@@ -1,5 +1,6 @@
 # Maven
 backend/target/
+**/target/
 
 # Java compiled files
 *.class
@@ -17,6 +18,8 @@ backend/target/
 
 # Environment / secrets
 .env
+.env.*
+!.env.example
 
 # Logs
-*.logbackend/src/main/resources/application.properties
+*.log

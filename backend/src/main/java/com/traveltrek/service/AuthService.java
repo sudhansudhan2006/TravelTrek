@@ -4,6 +4,7 @@ import com.traveltrek.dto.AuthResponse;
 import com.traveltrek.dto.LoginRequest;
 import com.traveltrek.dto.RegisterRequest;
 import com.traveltrek.entity.User;
+import com.traveltrek.entity.UserRole;
 import com.traveltrek.exception.BadRequestException;
 import com.traveltrek.repository.UserRepository;
 import com.traveltrek.security.JwtService;
@@ -37,8 +38,8 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
-    // Registers a new user and immediately logs them in (returns a token)
-    public AuthResponse register(RegisterRequest request) {
+    // Registers a new user without generating a token (user must log in separately)
+    public java.util.Map<String, Object> register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new BadRequestException("Email is already registered: " + request.getEmail());
         }
@@ -46,13 +47,16 @@ public class AuthService {
         User user = new User(
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()), // Never store plain text passwords
-                request.getRole()
+                UserRole.TRAVELER // Public registration always creates ONLY TRAVELER accounts
         );
         userRepository.save(user);
-        log.info("New user registered: {}", user.getEmail());
+        log.info("New user registered: {} with role {}", user.getEmail(), user.getRole());
 
-        String token = jwtService.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getEmail(), user.getRole());
+        java.util.Map<String, Object> response = new java.util.LinkedHashMap<>();
+        response.put("message", "Registration successful! Please login with your registered email and password.");
+        response.put("email", user.getEmail());
+        response.put("role", user.getRole().name());
+        return response;
     }
 
     // Authenticates an existing user and returns a new token
