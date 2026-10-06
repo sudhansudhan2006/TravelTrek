@@ -129,15 +129,23 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(
+        java.util.List<String> allowedOrigins = new java.util.ArrayList<>(List.of(
                 "http://127.0.0.1",
                 "http://localhost",
                 "http://127.0.0.1:8080",
                 "http://localhost:8080",
                 "http://127.0.0.1:5500",
                 "http://localhost:5500",
-                "http://localhost:63342"
+                "http://localhost:63342",
+                "https://traveltrek-dun.vercel.app"
         ));
+
+        String customOrigin = System.getenv("CORS_ALLOWED_ORIGIN");
+        if (customOrigin != null && !customOrigin.trim().isEmpty() && !allowedOrigins.contains(customOrigin.trim())) {
+            allowedOrigins.add(customOrigin.trim());
+        }
+
+        configuration.setAllowedOrigins(allowedOrigins);
 
         configuration.setAllowedMethods(List.of(
                 "GET",

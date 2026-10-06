@@ -58,7 +58,7 @@ function showAlert(message, type = "info") {
 // Extracts a readable message out of an Axios error, falling back to a generic one.
 // Matches the {timestamp, status, message, errors} shape from GlobalExceptionHandler.
 function getErrorMessage(error) {
-  if (error.response && error.response.data) {
+  if (error.response && error.response.data && typeof error.response.data === "object") {
     const data = error.response.data;
     if (data.errors) {
       // Field validation errors -> join into one readable string
@@ -67,6 +67,12 @@ function getErrorMessage(error) {
         .join(" | ");
     }
     if (data.message) return data.message;
+  }
+  if (error.response && error.response.status === 404) {
+    return "Backend endpoint not found (404). Please ensure your Spring Boot backend is deployed and configured in js/config.js.";
+  }
+  if (error.code === "ERR_NETWORK" || error.message === "Network Error") {
+    return "Cannot reach backend server. Please check your network connection, ensure the backend is running, and verify CORS allows this origin.";
   }
   if (error.message) return error.message;
   return "Something went wrong. Please try again.";

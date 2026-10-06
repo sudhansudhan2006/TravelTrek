@@ -7,12 +7,26 @@
    NOTE ON BASE URL:
    The Spring Boot backend maps every controller under
    "/api/v1" (see @RequestMapping("/api/v1/...") in each
-   controller), not just "/api". The base URL below matches
-   the real backend exactly.
+   controller). Base URL is resolved dynamically via config.js
+   (window.APP_CONFIG) so it works seamlessly on both localhost
+   and cloud production deployments (e.g., Vercel).
    ============================================================ */
 
+function getResolvedBaseUrl() {
+  if (typeof window !== "undefined" && window.APP_CONFIG && typeof window.APP_CONFIG.getApiBaseUrl === "function") {
+    return window.APP_CONFIG.getApiBaseUrl();
+  }
+  const isLocalhost = Boolean(
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" ||
+     window.location.hostname === "127.0.0.1" ||
+     window.location.hostname.endsWith(".local"))
+  );
+  return isLocalhost ? "http://localhost:8080/api/v1" : "/api/v1";
+}
+
 const api = axios.create({
-  baseURL: "/api/v1",
+  baseURL: getResolvedBaseUrl(),
   headers: {
     "Content-Type": "application/json",
   },
@@ -20,9 +34,11 @@ const api = axios.create({
 
 /* ---------- Request interceptor ----------
    Attaches "Authorization: Bearer <token>" to every outgoing
-   request, if a token is present in localStorage. */
+   request, if a token is present in localStorage. Also ensures
+   dynamic baseURL resolution for any runtime config changes. */
 api.interceptors.request.use(
   (config) => {
+    config.baseURL = getResolvedBaseUrl();
     const token = localStorage.getItem("tt_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
