@@ -9,7 +9,7 @@ window.APP_CONFIG = {
   // Once you deploy your Spring Boot backend (e.g., on Render, Railway, AWS, Fly.io),
   // update this URL to your deployed backend domain.
   // Example: "https://traveltrek-backend.onrender.com/api/v1"
-  PROD_API_BASE_URL: "https://traveltrek-backend.onrender.com/api/v1",
+  PROD_API_BASE_URL: "https://traveltrek-production.up.railway.app/api/v1",
 
   // Local development backend URL
   DEV_API_BASE_URL: "http://localhost:8080/api/v1",
