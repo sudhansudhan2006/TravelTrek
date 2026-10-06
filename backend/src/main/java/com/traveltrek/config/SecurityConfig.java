@@ -78,6 +78,7 @@ public class SecurityConfig {
                         ).permitAll()
 
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/health", "/health").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/v1/packages/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/v1/packages/**").hasRole("AGENCY_MANAGER")
